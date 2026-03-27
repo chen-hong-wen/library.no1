@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>悦选商城 | 精选好物</title>
+  <!-- 使用简洁的字体和图标库 Font Awesome (轻量美观) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      color: #1e293b;
+      overflow-x: hidden;
+      transition: background 0.2s;
+    }
+
+    /* 顶部导航栏 */
+    .header {
+      background: #ffffff;
+      backdrop-filter: blur(0px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: #3b82f6;
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+      cursor: pointer;
+      background: #f1f5f9;
+      padding: 0.6rem 1rem;
+      border-radius: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .cart-icon-wrapper:hover {
+      background: #e6edf4;
+      transform: scale(0.98);
+    }
+
+    .cart-icon {
+      font-size: 1.5rem;
+      color: #0f172a;
+    }
+
+    .cart-count {
+      background: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 30px;
+      padding: 0.2rem 0.55rem;
+      min-width: 22px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* 主体容器 */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .page-title i {
+      color: #3b82f6;
+      font-size: 1.8rem;
+    }
+
+    /* 商品网格 */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 2rem 1.5rem;
+    }
+
+    /* 商品卡片 */
+    .product-card {
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      transition: all 0.25s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #eef2f6;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.1);
+      border-color: #cbd5e1;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #f1f5f9;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.02);
+    }
+
+    .product-info {
+      padding: 1.2rem 1rem 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      color: #0f172a;
+    }
+
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #3b82f6;
+      margin: 0.6rem 0;
+    }
+
+    .product-price small {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #64748b;
+    }
+
+    .add-to-cart {
+      background: #0f172a;
+      border: none;
+      color: white;
+      padding: 0.7rem 0;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.4rem;
+      width: 100%;
+    }
+
+    .add-to-cart i {
+      font-size: 0.9rem;
+    }
+
+    .add-to-cart:hover {
+      background: #3b82f6;
+      transform: scale(0.97);
+    }
+
+    /* 侧边购物车 (滑入抽屉) */
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(3px);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.25s ease, visibility 0.25s;
+      z-index: 1000;
+    }
+
+    .cart-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -380px;
+      width: 100%;
+      max-width: 380px;
+      height: 100%;
+      background: white;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      z-index: 1100;
+    }
+
+    .cart-overlay.active .cart-drawer {
+      right: 0;
+    }
+
+    .cart-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #edf2f7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
+
+    .cart-header h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .close-cart {
+      background: #f1f5f9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: 0.2s;
+    }
+
+    .close-cart:hover {
+      background: #e2e8f0;
+    }
+
+    .cart-items-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 0.5rem 1rem 1rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 0.8rem;
+      background: #fafcff;
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #eef2ff;
+      transition: all 0.1s;
+    }
+
+    .cart-item-img {
+      width: 65px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #eef2ff;
+    }
+
+    .cart-item-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cart-item-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .cart-item-price {
+      font-weight: 600;
+      color: #3b82f6;
+      font-size: 0.9rem;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+
+    .cart-item-actions button {
+      background: #f1f5f9;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.1s;
+    }
+
+    .cart-item-actions button:hover {
+      background: #cbd5e1;
+    }
+
+    .cart-item-qty {
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .remove-item-btn {
+      background: transparent !important;
+      color: #ef4444;
+      font-size: 1rem;
+    }
+
+    .remove-item-btn:hover {
+      background: #fee2e2 !important;
+    }
+
+    .cart-footer {
+      padding: 1.2rem;
+      border-top: 1px solid #e9eef3;
+      background: white;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .checkout-btn {
+      background: #3b82f6;
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 2rem;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .checkout-btn:hover {
+      background: #2563eb;
+    }
+
+    .empty-cart-msg {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    /* 响应式优化 */
+    @media (max-width: 640px) {
+      .header {
+        padding: 0.8rem 1rem;
+      }
+
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+      }
+
+      .products-grid {
+        gap: 1rem;
+      }
+
+      .cart-drawer {
+        max-width: 100%;
+      }
+    }
+
+    /* 轻提示toast */
+    .toast-msg {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      z-index: 1200;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="logo-area">
+      <i class="fas fa-store logo-icon"></i>
+      <span class="logo-text">悦选商城</span>
+    </div>
+    <div class="cart-icon-wrapper" id="cartIconBtn">
+      <i class="fas fa-shopping-cart cart-icon"></i>
+      <span class="cart-count" id="cartCountBadge">0</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-title">
+      <i class="fas fa-tag"></i>
+      <span>人气好物 · 今日精选</span>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
+  <!-- 侧边购物车遮罩层 -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-drawer">
+      <div class="cart-header">
+        <h3><i class="fas fa-bag-shopping"></i> 购物车</h3>
+        <button class="close-cart" id="closeCartBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="cart-items-container" id="cartItemsList">
+        <!-- 动态购物车列表渲染 -->
+        <div class="empty-cart-msg">🛒 购物车还是空的，去逛逛吧</div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>合计</span>
+          <span id="cartTotalPrice">¥0</span>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn">去结算 <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastMsg" class="toast-msg">✨ 已加入购物车</div>
+
+  <script>
+    // ---------- 商品数据 ----------
+    const productsData = [
+      { id: 1, name: "极简纯棉T恤", price: 99, img: "https://picsum.photos/id/20/300/200" },      // 经典白T
+      { id: 2, name: "水洗复古牛仔裤", price: 199, img: "https://picsum.photos/id/26/300/200" },
+      { id: 3, name: "轻跑运动鞋", price: 299, img: "https://picsum.photos/id/0/300/200" },
+      { id: 4, name: "机能双肩包", price: 399, img: "https://picsum.photos/id/133/300/200" },
+      { id: 5, name: "极简石英手表", price: 499, img: "https://picsum.photos/id/82/300/200" },
+      { id: 6, name: "偏光太阳镜", price: 159, img: "https://picsum.photos/id/96/300/200" },
+      { id: 7, name: "针织冷帽", price: 89, img: "https://picsum.photos/id/292/300/200" },
+      { id: 8, name: "重磅连帽卫衣", price: 249, img: "https://picsum.photos/id/1/300/200" }
+    ];
+
+    // ---------- 购物车状态 (内存) ----------
+    let cart = [];   // 每个元素 { id, name, price, quantity, img }
+
+    // ---------- DOM 元素 ----------
+    const productsGrid = document.getElementById('productsGrid');
+    const cartCountBadge = document.getElementById('cartCountBadge');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const cartIconBtn = document.getElementById('cartIconBtn');
+    const cartItemsContainer = document.getElementById('cartItemsList');
+    const cartTotalPriceSpan = document.getElementById('cartTotalPrice');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const toastMsgDiv = document.getElementById('toastMsg');
+
+    // ---------- 辅助函数 ----------
+    function showToast(message = "✨ 已加入购物车", duration = 1500) {
+      toastMsgDiv.textContent = message;
+      toastMsgDiv.classList.add('show');
+      setTimeout(() => {
+        toastMsgDiv.classList.remove('show');
+      }, duration);
+    }
+
+    // 更新购物车徽章 (总件数)
+    function updateCartBadge() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCountBadge.innerText = totalItems;
+    }
+
+    // 计算总价
+    function calcTotalPrice() {
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      return total;
+    }
+
+    // 渲染购物车侧边栏内容 (完全根据cart数组)
+    function renderCartDrawer() {
+      if (!cartItemsContainer) return;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `<div class="empty-cart-msg"><i class="fas fa-shopping-basket"></i> 购物车空空如也～<br>去添加一些心仪好物吧</div>`;
+        cartTotalPriceSpan.innerText = `¥0`;
+        return;
+      }
+
+      let cartHtml = '';
+      cart.forEach(item => {
+        cartHtml += `
+                <div class="cart-item" data-cart-id="${item.id}">
+                    <img class="cart-item-img" src="${item.img}" alt="${item.name}" loading="lazy">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${escapeHtml(item.name)}</div>
+                        <div class="cart-item-price">¥${item.price}</div>
+                        <div class="cart-item-actions">
+                            <button class="cart-decr" data-id="${item.id}">-</button>
+                            <span class="cart-item-qty">${item.quantity}</span>
+                            <button class="cart-incr" data-id="${item.id}">+</button>
+                            <button class="remove-item-btn" data-id="${item.id}" title="移除"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+      });
+      cartItemsContainer.innerHTML = cartHtml;
+      const totalPrice = calcTotalPrice();
+      cartTotalPriceSpan.innerText = `¥${totalPrice}`;
+    }
+
+    // 简单防XSS
+    function escapeHtml(str) {
+      return str.replace(/[&<>]/g, function (m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function (c) {
+        return c;
+      });
+    }
+
+    // 添加商品到购物车 (若已存在则数量+1)
+    function addToCart(product) {
+      const existing = cart.find(item => item.id === product.id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          img: product.img
+        });
+      }
+      // 更新UI
+      updateCartBadge();
+      renderCartDrawer();
+      showToast(`✅ ${product.name} 已加入购物车`);
+    }
+
+    // 修改购物车商品数量 (delta: +1 / -1)
+    function updateCartItemQuantity(productId, delta) {
+      const index = cart.findIndex(item => item.id === productId);
+      if (index === -1) return;
+      const item = cart[index];
+      const newQuantity = item.quantity + delta;
+      if (newQuantity <= 0) {
+        // 移除商品
+        cart.splice(index, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+      updateCartBadge();
+      renderCartDrawer();
+      // 侧边栏开启时实时刷新，很自然
+    }
+
+    // 直接移除商品
+    function removeCartItem(productId) {
+      const idx = cart.findIndex(item => item.id === productId);
+      if (idx !== -1) {
+        cart.splice(idx, 1);
+        updateCartBadge();
+        renderCartDrawer();
+        showToast("🗑️ 已移除商品", 1000);
+      }
+    }
+
+    // 清空购物车 (可选, 未单独设清空按钮, 但可以配合结算后或扩展, 用户可手动移除; 提供一个额外便利但非必须)
+    // 增加一个清空所有商品的辅助: 为了方便可在右下角? 不增加复杂度，但可以调用; 但是不做多余按钮，因为不需要复杂。
+    // 但提供结算时模拟操作
+    function clearCart() {
+      if (cart.length === 0) return;
+      cart = [];
+      updateCartBadge();
+      renderCartDrawer();
+      showToast("🧹 购物车已清空", 1200);
+    }
+
+    // 结算模拟
+    function handleCheckout() {
+      if (cart.length === 0) {
+        showToast("🛒 购物车还是空的，先去添加商品吧~", 1500);
+        return;
+      }
+      const total = calcTotalPrice();
+      // 模拟结算弹窗
+      alert(`🎉 模拟结算成功！\n总金额：¥${total}\n感谢您的惠顾，订单已生成。`);
+      // 结算后清空购物车（商城通常逻辑）
+      cart = [];
+      updateCartBadge();
+      renderCartDrawer();
+      // 如果侧边栏开着，关闭侧边栏（可选）
+      closeCartSidebar();
+      showToast("🎉 下单成功，购物车已清空", 1500);
+    }
+
+    // 打开/关闭侧边栏
+    function openCartSidebar() {
+      cartOverlay.classList.add('active');
+      // 打开时重新渲染购物车，确保最新
+      renderCartDrawer();
+    }
+
+    function closeCartSidebar() {
+      cartOverlay.classList.remove('active');
+    }
+
+    // 商品列表渲染
+    function renderProducts() {
+      if (!productsGrid) return;
+      productsGrid.innerHTML = '';
+      productsData.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+                <img class="product-img" src="${product.img}" alt="${product.name}" loading="lazy">
+                <div class="product-info">
+                    <div class="product-title">${escapeHtml(product.name)}</div>
+                    <div class="product-price">¥${product.price} <small>/件</small></div>
+                    <button class="add-to-cart" data-id="${product.id}">
+                        <i class="fas fa-cart-plus"></i> 加入购物车
+                    </button>
+                </div>
+            `;
+        productsGrid.appendChild(card);
+      });
+
+      // 绑定商品列表中的加入购物车事件 (事件委托)
+      productsGrid.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const productId = parseInt(btn.getAttribute('data-id'));
+          const product = productsData.find(p => p.id === productId);
+          if (product) {
+            addToCart(product);
+          }
+        });
+      });
+    }
+
+    // 全局事件监听 (购物车内按钮通过事件委托)
+    function bindCartEvents() {
+      // 侧边栏内按钮的增减移除 (事件委托)
+      cartItemsContainer.addEventListener('click', (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+        // 增加数量按钮
+        if (target.classList.contains('cart-incr')) {
+          const id = parseInt(target.getAttribute('data-id'));
+          if (!isNaN(id)) updateCartItemQuantity(id, 1);
+        }
+        // 减少数量按钮
+        else if (target.classList.contains('cart-decr')) {
+          const id = parseInt(target.getAttribute('data-id'));
+          if (!isNaN(id)) updateCartItemQuantity(id, -1);
+        }
+        // 移除按钮
+        else if (target.classList.contains('remove-item-btn')) {
+          const id = parseInt(target.getAttribute('data-id'));
+          if (!isNaN(id)) removeCartItem(id);
+        }
+      });
+    }
+
+
+
+    // 初始化UI与交互
+    function init() {
+      renderProducts();
+      renderCartDrawer();
+      updateCartBadge();
+      bindCartEvents();
+
+      // 打开购物车
+      cartIconBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCartSidebar();
+      });
+
+      // 关闭购物车 (遮罩和关闭按钮)
+      closeCartBtn.addEventListener('click', closeCartSidebar);
+      cartOverlay.addEventListener('click', (e) => {
+        if (e.target === cartOverlay) {
+          closeCartSidebar();
+        }
+      });
+
+      // 结算按钮
+      checkoutBtn.addEventListener('click', handleCheckout);
+
+      // 可选: ESC 关闭侧边栏
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && cartOverlay.classList.contains('active')) {
+          closeCartSidebar();
+        }
+      });
+    }
+
+    // 页面启动
+    init();
+  </script>
+</body>
+
+</html>
