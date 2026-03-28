@@ -1,0 +1,15 @@
+app:
+  name: "图书馆座位视觉系统"
+  version: "1.0.0"
+  debug: true
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+
+detection:
+  model_path: "data/models/yolov8/best.pt"
+  confidence_threshold: 0.5
+  iou_threshold: 0.45
+  device: "cuda:0"

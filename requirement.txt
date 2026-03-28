@@ -1,0 +1,15 @@
+ultralytics==8.0.196
+opencv-python==4.8.1.78
+numpy==1.24.3
+pillow==10.1.0
+requests==2.31.0
+pyyaml==6.0.1
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+python-dotenv==1.0.0
+matplotlib==3.8.2
+seaborn==0.13.0
+pandas==2.1.4
+tqdm==4.66.1
+labelImg==1.8.6

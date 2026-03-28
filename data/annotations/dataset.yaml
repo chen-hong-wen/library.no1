@@ -1,0 +1,7 @@
+# data/xmls/dataset.yaml 应该包含类似内容
+path: E:\Libseat_system\computer_vision\data
+train: processed/train/images
+val: processed/val/images
+
+nc: 2  # 类别数量
+names: ['occupied_seat', 'empty_seat']  # 类别名称

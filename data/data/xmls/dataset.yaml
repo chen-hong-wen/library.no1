@@ -1,0 +1,7 @@
+names:
+- occupied_seat
+- empty_seat
+nc: 2
+path: ../
+train: processed/train/images
+val: processed/val/images
